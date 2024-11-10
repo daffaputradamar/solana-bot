@@ -114,25 +114,27 @@ async function sellToken(inputTokenMint, amount) {
 
   const slippage = config.defaultSlippage;
 
-  const bestRoute = await getBestRoute(inputTokenMint, config.targetToken, amountInSmallestUnit.toString(), slippage);
-
-  if (!bestRoute) {
-    console.log(`[ERROR] [${new Date().toISOString()}] No valid route found`);
-    return;
-  }
-
-  const txid = await executeSwap(bestRoute);
-
-  const endTime = Date.now(); // End timestamp
-  const duration = (endTime - startTime) / 1000; // Calculate elapsed time in seconds
-  
-  if (txid) {
-    console.log(`[SUCCESS] [${new Date(endTime).toISOString()}] Swap successful with txid: ${txid}`);
-  } else {
-    console.log(`[ERROR] [${new Date(endTime).toISOString()}] Swap failed`); 
-  }
-  
-  console.log(`[INFO] [${new Date(endTime).toISOString()}] Process took ${duration.toFixed(2)} seconds`);
+  config.targetToken.forEach(async (targetToken) => {
+      const bestRoute = await getBestRoute(inputTokenMint, targetToken, amountInSmallestUnit.toString(), slippage);
+    
+      if (!bestRoute) {
+        console.log(`[ERROR] [${new Date().toISOString()}] No valid route found`);
+        return;
+      }
+    
+      const txid = await executeSwap(bestRoute);
+    
+      const endTime = Date.now(); // End timestamp
+      const duration = (endTime - startTime) / 1000; // Calculate elapsed time in seconds
+      
+      if (txid) {
+        console.log(`[SUCCESS] [${new Date(endTime).toISOString()}] Swap successful with txid: ${txid}`);
+      } else {
+        console.log(`[ERROR] [${new Date(endTime).toISOString()}] Swap failed`); 
+      }
+      
+      console.log(`[INFO] [${new Date(endTime).toISOString()}] Process took ${duration.toFixed(2)} seconds`);
+  });
 }
 
 // Function to monitor wallet for tokens and execute swaps if applicable
@@ -157,7 +159,7 @@ async function monitorWalletForTokens() {
     const tokenAmount = Number(rawTokenAmount) / (10 ** decimals);
 
     // Check if this token is in the list of target tokens to sell
-    if (config.tokenContracts.includes(tokenAddress) && tokenAmount > 0) {
+    if (config.tokenContracts.includes(tokenAddress) && tokenAmount > 1) {
       await sellToken(tokenAddress, tokenAmount);
     }
   }
