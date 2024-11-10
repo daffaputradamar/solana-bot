@@ -114,27 +114,25 @@ async function sellToken(inputTokenMint, amount) {
 
   const slippage = config.defaultSlippage;
 
-  config.targetToken.forEach(async (targetToken) => {
-      const bestRoute = await getBestRoute(inputTokenMint, config.targetToken, amountInSmallestUnit.toString(), slippage);
-    
-      if (!bestRoute) {
-        console.log(`[ERROR] [${new Date().toISOString()}] No valid route found`);
-        return;
-      }
-    
-      const txid = await executeSwap(bestRoute);
-    
-      const endTime = Date.now(); // End timestamp
-      const duration = (endTime - startTime) / 1000; // Calculate elapsed time in seconds
-      
-      if (txid) {
-        console.log(`[SUCCESS] [${new Date(endTime).toISOString()}] Swap successful with txid: ${txid}`);
-      } else {
-        console.log(`[ERROR] [${new Date(endTime).toISOString()}] Swap failed`); 
-      }
-      
-      console.log(`[INFO] [${new Date(endTime).toISOString()}] Process took ${duration.toFixed(2)} seconds`);
-  });
+  const bestRoute = await getBestRoute(inputTokenMint, config.targetToken, amountInSmallestUnit.toString(), slippage);
+
+  if (!bestRoute) {
+    console.log(`[ERROR] [${new Date().toISOString()}] No valid route found`);
+    return;
+  }
+
+  const txid = await executeSwap(bestRoute);
+
+  const endTime = Date.now(); // End timestamp
+  const duration = (endTime - startTime) / 1000; // Calculate elapsed time in seconds
+  
+  if (txid) {
+    console.log(`[SUCCESS] [${new Date(endTime).toISOString()}] Swap successful with txid: ${txid}`);
+  } else {
+    console.log(`[ERROR] [${new Date(endTime).toISOString()}] Swap failed`); 
+  }
+  
+  console.log(`[INFO] [${new Date(endTime).toISOString()}] Process took ${duration.toFixed(2)} seconds`);
 }
 
 // Function to monitor wallet for tokens and execute swaps if applicable
