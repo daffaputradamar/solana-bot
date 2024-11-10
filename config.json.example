@@ -1,0 +1,15 @@
+{
+    "solanaNetwork": "",
+    "rpcUrl": "",
+    "walletPrivateKey": "",
+    "tokenContracts": "",
+    "targetToken": "",
+    "defaultSlippage": "",
+    "maxSlippage": "",
+    "minPriorityFee": "",
+    "maxPriorityFee": "",
+    "maxRetries": "",
+    "retryDelay": "",
+    "monitoringInterval": ""
+  }
+  
